@@ -63,7 +63,7 @@ class Rule(object):
 
 def capitalize_name(x):
     for nnp in x:
-        print "Capitalizing"
+        print("Capitalizing")
         nnp.token = nnp.token.capitalize()
 
 
@@ -94,5 +94,5 @@ original = copy.deepcopy(sentence)
 for rule in rules:
     rule.apply(sentence)
 
-print "From: " + " ".join((w.token for w in original))
-print "To:   " + " ".join((w.token for w in sentence))
+print("From: " + " ".join((w.token for w in original)))
+print("To:   " + " ".join((w.token for w in sentence)))

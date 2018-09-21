@@ -32,7 +32,7 @@ depth = 0
 for m in finditer(regex, text):
     if "open" in m:
         i, j = m["name"]
-        print "  " * depth + text[i:j]
+        print("  " * depth + text[i:j])
         depth += 1
     else:
         assert "close" in m

@@ -51,6 +51,10 @@ class Predicate(Pattern):
         self.arg = f
 
     def _compile(self, cont):
+        """
+        :param cont: continue instructions
+        :return:
+        """
         x = Atom(self.f, succ=cont)
         return x
 

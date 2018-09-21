@@ -20,12 +20,12 @@ regex = Question(a) * N + a * N
 start = time.time()
 m = match(regex, string)
 end = time.time()
-print "Refo finished in {0:.2} seconds".format(end - start)
+print("Refo finished in {0:.2} seconds".format(end - start))
 
 regex = "(:?a?){{{0}}}a{{{0}}}".format(N)
-print "Trying", regex
+print("Trying", regex)
 regex = re.compile(regex)
 start = time.time()
 regex.match(string)
 end = time.time()
-print "Python re finished in {0:.2} seconds".format(end - start)
+print("Python re finished in {0:.2} seconds".format(end - start))

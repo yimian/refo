@@ -23,4 +23,4 @@ seq = [[1, 2],     # x and y
 
 regex = refo.Star(y) + refo.Plus(x + z)
 m = refo.match(regex, seq, keep_path=True)
-print m.get_path()
+print(m.get_path())

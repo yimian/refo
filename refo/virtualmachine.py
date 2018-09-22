@@ -7,6 +7,13 @@
 
 import copy
 from .instructions import Atom, Accept, Split, Save
+from enum import IntEnum
+
+
+class MatchType(IntEnum):
+    NotMatch = 0
+    FullMatch = 1
+    PartialMatch = 2
 
 
 class RefoThread(object):
@@ -19,6 +26,7 @@ class RefoThread(object):
         self.pc = pc
         self.state = {}
         self.i = 0    # FIXME: `i` is the same for every thread
+        self.cache = []  # save temporary input symbol when enable partial match
 
     def step(self):
         """
@@ -46,15 +54,34 @@ class RefoThread(object):
         """
         assert self.idle()
         self.i += 1
-        if isinstance(self.pc, Accept) or not self.pc.comparison_function(x):
+        if isinstance(self.pc, Accept):
             self.pc = None
         else:
-            self.pc = self.pc.succ
+            if len(self.cache) != 0:
+                self.cache.append(x)
+                x = self.cache
+            res = self.pc.comparison_function(x)
+            if isinstance(res, MatchType):
+                if res is MatchType.NotMatch:
+                    self.pc = None
+                    self.cache = []
+                elif res is MatchType.FullMatch:
+                    self.pc = self.pc.succ
+                    self.cache = []
+                else:  # partial match
+                    self.cache.append(x)
+            else:
+                if res:
+                    self.pc = self.pc.succ
+                else:
+                    self.pc = None
+                self.cache = []
 
     def copy(self, pc):
         c = self.__class__(pc)
         c.state = copy.copy(self.state)
         c.i = self.i
+        c.cache = list(self.cache)
         return c
 
     def idle(self):
@@ -84,18 +111,33 @@ class RefoThreadWithPath(RefoThread):
         if isinstance(self.pc, Accept):
             self.pc = None
         else:
-            y = self.pc.comparison_function(x)
-            if y:
-                self.state["path"].append(y)
-                self.pc = self.pc.succ
+            if len(self.cache) != 0:
+                self.cache.append(x)
+                x = self.cache
+            res = self.pc.comparison_function(x)
+            if isinstance(res, MatchType):
+                if res is MatchType.NotMatch:
+                    self.pc = None
+                    self.cache = []
+                elif res is MatchType.FullMatch:
+                    self.pc = self.pc.succ
+                    self.cache = []
+                else:  # partial match
+                    self.cache.append(x)
             else:
-                self.pc = None
+                if res:
+                    self.state["path"].append(res)
+                    self.pc = self.pc.succ
+                else:
+                    self.pc = None
+                self.cache = []
 
     def copy(self, pc):
         c = self.__class__(pc)
         c.state = copy.copy(self.state)
         c.state["path"] = list(c.state["path"])
         c.i = self.i
+        c.cache = list(self.cache)
         return c
 
 

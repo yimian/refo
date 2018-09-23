@@ -69,7 +69,8 @@ class RefoThread(object):
                     self.pc = self.pc.succ
                     self.cache = []
                 else:  # partial match
-                    self.cache.append(x)
+                    if len(self.cache) == 0:
+                        self.cache.append(x)
             else:
                 if res:
                     self.pc = self.pc.succ
@@ -123,7 +124,8 @@ class RefoThreadWithPath(RefoThread):
                     self.pc = self.pc.succ
                     self.cache = []
                 else:  # partial match
-                    self.cache.append(x)
+                    if len(self.cache) == 0:
+                        self.cache.append(x)
             else:
                 if res:
                     self.state["path"].append(res)

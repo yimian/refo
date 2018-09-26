@@ -61,7 +61,7 @@ class Predicate(Pattern):
 
 class Any(Predicate):
     def __init__(self):
-        super(Any, self).__init__(lambda x: True)
+        super(Any, self).__init__(self._comp_func)
 
     def __str__(self):
         return "Any()"
@@ -69,12 +69,19 @@ class Any(Predicate):
     def __repr__(self):
         return "Any()"
 
+    def _comp_func(self, y):
+        return True
+
+
 
 class Literal(Predicate):
     def __init__(self, x):
-        super(Literal, self).__init__(lambda y: x == y)
+        super(Literal, self).__init__(self._comp_func)
         self.x = x
         self.arg = x
+
+    def _comp_func(self, y):
+        return self.x == y
 
 
 class Disjunction(Pattern):
